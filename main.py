@@ -1,6 +1,6 @@
 from aiohttp import ClientSession, FormData
 from aiofiles import open as aio_open
-from asyncio import sleep, run
+from asyncio import sleep
 from os import PathLike
 from os.path import exists
 from typing import Literal

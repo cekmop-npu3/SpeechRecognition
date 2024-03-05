@@ -9,17 +9,17 @@ class ReadOnly(type):
             if not key.startswith('__'):
                 setattr(ReadOnly, f'__{key}', value)
                 setattr(ReadOnly, f'{key}', property(
-                    fget=partial(ReadOnly.get_item, key),
-                    fset=partial(ReadOnly.set_item, key)
+                    fget=partial(ReadOnly.getItem, key),
+                    fset=partial(ReadOnly.setItem, key)
                 ))
             super().__setitem__(key, value)
 
     @staticmethod
-    def get_item(key: str, _) -> Any:
+    def getItem(key: str, _) -> Any:
         return getattr(ReadOnly, f'__{key}')
 
     @staticmethod
-    def set_item(key: str, *_):
+    def setItem(key: str, *_):
         raise AttributeError(f'Cannot reassign {key}')
 
     def __new__(mcs, name, bases, attrs) -> object:
