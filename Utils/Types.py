@@ -2,11 +2,16 @@ from typing import TypedDict, Literal, NotRequired
 
 
 __all__ = (
+    'ServiceToken',
     'UploadUrl',
     'Audio',
     'TaskId',
     'Status'
 )
+
+
+class ServiceToken(TypedDict):
+    access_token: str
 
 
 class UploadUrl(TypedDict):

@@ -28,12 +28,3 @@ class ReadOnly(type):
     @classmethod
     def __prepare__(mcs, name, bases) -> PreparedDict:
         return mcs.PreparedDict()
-
-
-class Singleton(type):
-    classes_ = {}
-
-    def __call__(cls, *args, **kwargs) -> object:
-        if cls not in cls.classes_.keys():
-            cls.classes_[cls] = super().__call__(*args, **kwargs)
-        return cls.classes_.get(cls)

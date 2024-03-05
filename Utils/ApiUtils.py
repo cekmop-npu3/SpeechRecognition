@@ -8,6 +8,7 @@ from .MetaBase import ReadOnly
 
 
 class ApiEndpoints(metaclass=ReadOnly):
+    serviceToken = 'https://api.vk.com/method/restore.getAccessToken'
     uploadServer = 'https://api.vk.com/method/asr.getUploadUrl'
     processFileObj = 'https://api.vk.com/method/asr.process'
     checkStatus = 'https://api.vk.com/method/asr.checkStatus'

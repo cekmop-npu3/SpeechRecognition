@@ -3,11 +3,10 @@ from aiofiles import open as aio_open
 from asyncio import sleep
 from os import PathLike
 from os.path import exists
-from typing import Literal
+from typing import Literal, Optional, Any
 from json import dumps
 
 from Utils import (
-    Singleton,
     ApiEndpoints,
     basicVkHandler,
     responseHandler,
@@ -16,13 +15,23 @@ from Utils import (
     Audio,
     TaskId,
     VkApiException,
-    Status
+    Status,
+    ServiceToken
 )
 
 
-class SpeechRecognition(metaclass=Singleton):
-    def __init__(self, access_token: str, vk_api_version: str | int = '5.199') -> None:
+class SpeechRecognition:
+    def __init__(self, access_token: Optional[str] = None, vk_api_version: str | int = '5.199') -> None:
         self.auth = {'access_token': access_token, 'v': vk_api_version}
+
+    @basicVkHandler
+    async def generateServiceToken(self) -> list[Any, ServiceToken] | Response:
+        async with ClientSession() as session:
+            async with session.post(
+                url=ApiEndpoints.serviceToken,
+                data={'v': '5.83'}
+            ) as response:
+                return await responseHandler(response, 'toJson')
 
     @basicVkHandler
     async def uploadServer(self) -> UploadUrl | Response:
@@ -84,5 +93,7 @@ class SpeechRecognition(metaclass=Singleton):
         await sleep(1)
         return r if status == 'finished' else await self.pending(task_id)
 
-    async def recognize(self, audio: str | bytes | PathLike, recognition_mode: Literal['neutral', 'spontaneous'] = 'spontaneous') -> str:
+    async def recognize(self, audio: str | bytes | PathLike, recognition_mode: Literal['neutral', 'spontaneous'] = 'spontaneous'):
+        if not self.auth.get('access_token'):
+            self.auth['access_token'] = (await self.generateServiceToken())[1].get('access_token')
         return (await self.pending(await self.taskId(await self.uploadAudio(await self.uploadServer(), audio), recognition_mode))).get('text')
