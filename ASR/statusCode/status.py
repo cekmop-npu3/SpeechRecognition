@@ -47,7 +47,7 @@ class StatusCode:
 
 class StatusMeta(type):
     def __new__(mcs, name, bases, attrs: dict) -> object:
-        [attrs.__setitem__(key, StatusCode(value) if isinstance(value, int) else StatusCode(*value)) for key, value in attrs.items() if not key.startswith('__') and not hasattr(object, key) and not '__check__' in attrs]
+        [attrs.__setitem__(key, StatusCode(value) if isinstance(value, int) else StatusCode(*value)) for key, value in attrs.items() if not key.startswith('__') and not hasattr(object, key)]
         return super().__new__(mcs, name, bases, attrs)
 
     def __getitem__(self, status: Union[StatusCode, int]) -> StatusCode:
@@ -58,7 +58,5 @@ class StatusMeta(type):
 
 
 class Status(metaclass=StatusMeta):
-    __check__ = True
-
     def __init__(self, *args, **kwargs):
         raise NotImplementedError(f'Cannot instantiate {self.__class__.__name__} object')
