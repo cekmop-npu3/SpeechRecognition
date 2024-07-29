@@ -1,7 +1,7 @@
 from typing import Optional, overload, Annotated
 from os import PathLike
 
-from .annotations import Model, Text
+from .types import Model, Text
 
 
 __all__ = (
