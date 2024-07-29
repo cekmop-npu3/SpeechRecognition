@@ -57,6 +57,8 @@ class Service:
     async def uploadFile(self, uploadUrl: UploadUrl, payload: bytes) -> AudioObject:
         async with ClientSession() as session:
             async with session.post(uploadUrl.upload_url, data=FormData([('file', payload)])) as response:
+                if response.status == 413:
+                    raise VkApiException('Request Entity Too Large')
                 return AudioObject(model=self.model, audio=dumps(Audio(await response.json())))
 
     async def process(self, audioObject: AudioObject) -> TaskId:
