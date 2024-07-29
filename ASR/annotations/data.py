@@ -1,8 +1,10 @@
 from os import PathLike
 from typing import Union, TypeAlias, Annotated, Literal
+from enum import StrEnum
 
 from ASR.utils import ReadOnly
 from ASR.javascript import Object
+from ASR.statusCode import Status
 
 
 __all__ = (
@@ -21,7 +23,9 @@ __all__ = (
     'TaskId',
     'TaskIdRsp',
     'Text',
-    'CheckStatus'
+    'CheckStatus',
+    'ResponseStatus',
+    'TextStatus'
 )
 
 
@@ -41,6 +45,19 @@ class Endpoints(ReadOnly):
 class VkParams(Object):
     v: str
     access_token: str
+
+
+class ResponseStatus(Status):
+    ok = 200, 'The request succeeded'
+    tooLarge = 413, 'Request Entity Too Large'
+
+
+class TextStatus(StrEnum):
+    processing = 'processing'
+    finished = 'finished'
+    internalError = 'internal_error'
+    transcodingError = 'transcoding_error'
+    recognitionError = 'recognition_error'
 
 
 """ServiceTokenRsp entities"""
