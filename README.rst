@@ -39,7 +39,7 @@ Usage
 .. code:: py
 
     from ASR import Asr
-    from ASR.annotations import Text
+    from ASR.types import Text
     from asyncio import run
 
 
