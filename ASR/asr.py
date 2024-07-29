@@ -57,8 +57,8 @@ class Service:
     async def uploadFile(self, uploadUrl: UploadUrl, payload: bytes) -> AudioObject:
         async with ClientSession() as session:
             async with session.post(uploadUrl.upload_url, data=FormData([('file', payload)])) as response:
-                if response.status == 413:
-                    raise VkApiException('Request Entity Too Large')
+                if (r := response.status) == ResponseStatus.tooLarge:
+                    raise VkApiException(ResponseStatus[r].message)
                 return AudioObject(model=self.model, audio=dumps(Audio(await response.json())))
 
     async def process(self, audioObject: AudioObject) -> TaskId:
@@ -72,7 +72,7 @@ class Service:
                 await sleep(1)
                 if (text := CheckStatus(await response.json()).response).status in BadStatus:
                     raise VkApiException(text.status)
-                return text if text.status == 'finished' else await self.pending(taskId)
+                return text if text.status == TextStatus.finished else await self.pending(taskId)
 
 
 class Asr:
