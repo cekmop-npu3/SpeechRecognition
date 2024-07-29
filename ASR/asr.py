@@ -8,7 +8,7 @@ from os.path import exists
 from json import dumps
 
 from .utils import vkErrorHandler, VkApiException
-from .annotations import *
+from .types import *
 
 
 __all__ = (
